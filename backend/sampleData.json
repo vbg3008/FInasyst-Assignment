@@ -1,0 +1,76 @@
+{
+  "users": [
+    {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "password123",
+      "isAdmin": false
+    },
+    {
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "password": "password123",
+      "isAdmin": false
+    },
+    {
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "isAdmin": true
+    }
+  ],
+  "accounts": [
+    {
+      "balance": 5000,
+      "accountType": "savings",
+      "isActive": true
+    },
+    {
+      "balance": 2500,
+      "accountType": "checking",
+      "isActive": true
+    },
+    {
+      "balance": 10000,
+      "accountType": "investment",
+      "isActive": true
+    }
+  ],
+  "transactions": [
+    {
+      "type": "deposit",
+      "amount": 1000,
+      "description": "Initial deposit",
+      "status": "completed",
+      "reference": "DEP-1234567890"
+    },
+    {
+      "type": "withdrawal",
+      "amount": 500,
+      "description": "ATM withdrawal",
+      "status": "completed",
+      "reference": "WIT-1234567891"
+    },
+    {
+      "type": "transfer",
+      "amount": 750,
+      "description": "Transfer to savings",
+      "status": "completed",
+      "reference": "TRF-1234567892"
+    },
+    {
+      "type": "deposit",
+      "amount": 2000,
+      "description": "Salary deposit",
+      "status": "completed",
+      "reference": "DEP-1234567893"
+    },
+    {
+      "type": "withdrawal",
+      "amount": 300,
+      "description": "Online purchase",
+      "status": "completed",
+      "reference": "WIT-1234567894"
+    }
+  ]
+}
