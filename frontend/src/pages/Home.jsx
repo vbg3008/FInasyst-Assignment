@@ -1,19 +1,141 @@
 import { Link } from "react-router-dom";
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
 import useAuth from "../hooks/useAuth";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
 
+  // Refs for animations
+  const heroRef = useRef(null);
+  const heroTitleRef = useRef(null);
+  const heroTextRef = useRef(null);
+  const heroButtonsRef = useRef(null);
+  const featuresRef = useRef(null);
+  const featureCardsRef = useRef(null);
+
+  // Hero section animations - simplified to ensure content is visible
+  useEffect(() => {
+    // Make sure all elements are visible first
+    gsap.set(
+      [
+        heroRef.current,
+        heroTitleRef.current,
+        heroTextRef.current,
+        heroButtonsRef.current,
+      ],
+      { opacity: 1 }
+    );
+
+    // Hero container animation - subtle fade in
+    gsap.fromTo(
+      heroRef.current,
+      { opacity: 0.9 },
+      {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power1.out",
+      }
+    );
+
+    // Hero title animation - subtle movement
+    gsap.fromTo(
+      heroTitleRef.current,
+      { opacity: 0.9, y: 10 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        delay: 0.1,
+        ease: "power1.out",
+      }
+    );
+
+    // Hero text animation - subtle movement
+    gsap.fromTo(
+      heroTextRef.current,
+      { opacity: 0.9, y: 5 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        delay: 0.2,
+        ease: "power1.out",
+      }
+    );
+
+    // Hero buttons animation - subtle fade in
+    if (heroButtonsRef.current) {
+      const buttons = heroButtonsRef.current.children;
+      gsap.fromTo(
+        buttons,
+        { opacity: 0.8 },
+        {
+          opacity: 1,
+          duration: 0.4,
+          stagger: 0.1,
+          delay: 0.3,
+          ease: "power1.out",
+        }
+      );
+    }
+  }, []);
+
+  // Features section animations - simplified to ensure content is visible
+  useEffect(() => {
+    // Make sure all elements are visible first
+    gsap.set([featuresRef.current, featureCardsRef.current], { opacity: 1 });
+
+    // Features title animation - subtle fade in
+    gsap.fromTo(
+      featuresRef.current,
+      { opacity: 0.9, y: 5 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        delay: 0.2,
+        ease: "power1.out",
+      }
+    );
+
+    // Feature cards animation - subtle fade in
+    if (featureCardsRef.current) {
+      const cards = featureCardsRef.current.children;
+      gsap.fromTo(
+        cards,
+        { opacity: 0.9, y: 5 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.1,
+          delay: 0.3,
+          ease: "power1.out",
+        }
+      );
+    }
+  }, []);
+
   return (
     <div className="py-12">
       {/* Hero Section */}
-      <div className="text-center px-4 py-20 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl max-w-5xl mx-auto mb-20 relative overflow-hidden">
+      <div
+        ref={heroRef}
+        className="text-center px-4 py-20 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl max-w-5xl mx-auto mb-20 relative overflow-hidden"
+      >
         {/* Background pattern */}
-        
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 relative">
+
+        <h1
+          ref={heroTitleRef}
+          className="text-4xl md:text-6xl font-extrabold text-white mb-6 relative"
+        >
           Welcome to BankBalance
         </h1>
-        <p className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">
+        <p
+          ref={heroTextRef}
+          className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto"
+        >
           Your secure banking solution for managing finances with ease.
         </p>
 
@@ -25,7 +147,10 @@ const Home = () => {
             Go to Dashboard
           </Link>
         ) : (
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <div
+            ref={heroButtonsRef}
+            className="flex flex-col sm:flex-row justify-center gap-4"
+          >
             <Link
               to="/login"
               className="inline-block bg-white text-indigo-600 font-medium px-8 py-4 rounded-lg shadow-lg hover:bg-indigo-50 transition-all duration-200 transform hover:-translate-y-1 cursor-pointer"
@@ -44,8 +169,10 @@ const Home = () => {
 
       {/* Features Section */}
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Features</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <h2 ref={featuresRef} className="text-3xl font-bold text-center mb-12">
+          Features
+        </h2>
+        <div ref={featureCardsRef} className="grid md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
             <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
               <svg

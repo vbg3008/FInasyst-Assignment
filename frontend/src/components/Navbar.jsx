@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { gsap } from "gsap";
 import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
@@ -7,15 +8,109 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const navbarRef = useRef(null);
+  const logoRef = useRef(null);
+  const desktopMenuRef = useRef(null);
+  const mobileMenuItemsRef = useRef(null);
+
+  // Animation for navbar on initial load - simplified to ensure content is visible
+  useEffect(() => {
+    // Make sure all elements are visible first
+    gsap.set([navbarRef.current, logoRef.current, desktopMenuRef.current], {
+      opacity: 1,
+    });
+
+    // Animate navbar - subtle fade in
+    gsap.fromTo(
+      navbarRef.current,
+      { opacity: 0.9, y: -5 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: "power1.out",
+      }
+    );
+
+    // Animate logo - subtle scale effect
+    gsap.fromTo(
+      logoRef.current,
+      { opacity: 0.9, scale: 0.98 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: "power1.out",
+        delay: 0.1,
+      }
+    );
+
+    // Animate desktop menu items - subtle fade in
+    if (desktopMenuRef.current) {
+      const menuItems = desktopMenuRef.current.children;
+      gsap.fromTo(
+        menuItems,
+        { opacity: 0.9 },
+        {
+          opacity: 1,
+          duration: 0.3,
+          stagger: 0.05,
+          delay: 0.2,
+          ease: "power1.out",
+        }
+      );
+    }
+  }, []);
+
+  // Animation for mobile menu items - simplified to ensure content is visible
+  useEffect(() => {
+    if (isMenuOpen && mobileMenuItemsRef.current) {
+      // Make sure all menu items are visible first
+      const menuItems = mobileMenuItemsRef.current.children;
+      gsap.set(menuItems, { opacity: 1 });
+
+      // Subtle animation for mobile menu items
+      gsap.fromTo(
+        menuItems,
+        {
+          opacity: 0.9,
+          x: -5,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.2,
+          stagger: 0.05,
+          ease: "power1.out",
+        }
+      );
+    }
+  }, [isMenuOpen]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
-    setIsMenuOpen(false);
+    // Simplified animation for logout button
+    const logoutBtn = document.activeElement;
+    if (logoutBtn) {
+      // Subtle animation that won't hide the button
+      gsap.to(logoutBtn, {
+        scale: 0.95,
+        duration: 0.1,
+        onComplete: () => {
+          gsap.to(logoutBtn, { scale: 1, duration: 0.1 });
+          logout();
+          navigate("/login");
+          setIsMenuOpen(false);
+        },
+      });
+    } else {
+      logout();
+      navigate("/login");
+      setIsMenuOpen(false);
+    }
   };
 
   // Close menu when clicking outside
@@ -48,12 +143,16 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg">
+    <nav
+      ref={navbarRef}
+      className="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link
+              ref={logoRef}
               to="/"
               className="text-white text-xl font-bold flex items-center"
             >
@@ -75,7 +174,10 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div
+            ref={desktopMenuRef}
+            className="hidden md:flex items-center space-x-4"
+          >
             {isAuthenticated ? (
               <>
                 <Link
@@ -203,58 +305,52 @@ const Navbar = () => {
               />
             </svg>
           </button>
-          {isAuthenticated ? (
-            <>
-              <Link
-                to="/dashboard"
-                className="text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out"
-                onClick={() => setIsMenuOpen(false)}
-                style={{ animationDelay: "100ms" }}
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/transactions"
-                className="text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out"
-                onClick={() => setIsMenuOpen(false)}
-                style={{ animationDelay: "200ms" }}
-              >
-                Transactions
-              </Link>
-              <div
-                className="text-indigo-100 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out"
-                style={{ animationDelay: "300ms" }}
-              >
-                Hello, {user?.name}
-              </div>
-              <button
-                onClick={handleLogout}
-                className="w-full text-left text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium cursor-pointer transform transition-all duration-300 ease-in-out"
-                style={{ animationDelay: "400ms" }}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out"
-                onClick={() => setIsMenuOpen(false)}
-                style={{ animationDelay: "100ms" }}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="bg-white text-indigo-600 hover:bg-indigo-50 block px-3 py-2 rounded-md text-base font-medium my-2 shadow-md transform transition-all duration-300 ease-in-out"
-                onClick={() => setIsMenuOpen(false)}
-                style={{ animationDelay: "200ms" }}
-              >
-                Register
-              </Link>
-            </>
-          )}
+          <div ref={mobileMenuItemsRef}>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/transactions"
+                  className="text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Transactions
+                </Link>
+                <div className="text-indigo-100 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out">
+                  Hello, {user?.name}
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium cursor-pointer transform transition-all duration-300 ease-in-out"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-white hover:bg-indigo-800 block px-3 py-2 rounded-md text-base font-medium transform transition-all duration-300 ease-in-out"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-white text-indigo-600 hover:bg-indigo-50 block px-3 py-2 rounded-md text-base font-medium my-2 shadow-md transform transition-all duration-300 ease-in-out"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </nav>
